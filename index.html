@@ -1,56 +1,62 @@
 <!DOCTYPE html>
 <html>
   <head>
-      <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width,initial-scale=1">
-              <title>X Wrapped 2025</title>
-                  <style>
-                        body{margin:0;font-family:system-ui;background:#000;color:#fff;height:100vh;display:grid;place-items:center}
-                              .card{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);padding:2rem;border-radius:20px;text-align:center;max-width:90%}
-                                    input,button{padding:1rem 1.5rem;border:none;border-radius:50px;font-size:1.2rem;margin:0.5rem}
-                                          input{background:#fff;color:#000}
-                                                button{background:#1d9bf0;color:white;cursor:pointer}
-                                                      .gradient{background:linear-gradient(135deg,#1da1f2,#000000)}
-                                                          </style>
-                                                            </head>
-                                                              <body class="gradient">
-                                                                  <div class="card">
-                                                                        <h1 style="font-size:3rem;margin:0">X Wrapped 2025</h1>
-                                                                              <p style="font-size:1.5rem;opacity:opacity:0.9">See your year on X</p>
-                                                                                    <input id="username" placeholder="@elonmusk" />
-                                                                                          <button onclick="go()">Get My Wrapped</button>
-                                                                                                <p id="result" style="margin-top:2rem;font-size:1.5rem"></p>
-                                                                                                    </div>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>X Wrapped 2025</title>
+    <style>
+      body{margin:0;font-family:system-ui;background:#000;color:#fff;height:100vh;display:grid;place-items:center}
+      .card{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);padding:2rem;border-radius:20px;text-align:center;max-width:90%}
+      input,button{padding:1rem 1.5rem;border:none;border-radius:50px;font-size:1.2rem;margin:0.5rem}
+      input{background:#fff;color:#000;width:100%;max-width:300px}
+      button{background:#1d9bf0;color:white;cursor:pointer;font-weight:bold}
+      img{border-radius:50%;border:5px solid rgba(255,255,255,255,0.3)}
+      .gradient{background:linear-gradient(135deg,#1da1f2,#000000)}
+    </style>
+  </head>
+  <body class="gradient">
+    <div class="card">
+      <h1 style="font-size:3rem;margin:0">X Wrapped 2025</h1>
+      <p style="font-size:1.4rem;opacity:0.9">Your year on X, beautifully</p>
+      <input id="username" placeholder="@elonmusk" />
+      <button onclick="go()">Get My Wrapped</button>
+      <div id="result" style="margin-top:2rem;font-size:1.4rem;line-height:1.8"></div>
+    </div>
 
-                                                                                                        <script>
-                                                                                                              async function go() {
-                                                                                                                      const username = document.getElementById('username').value.replace('@','')
-                                                                                                                              if (!username) return
-                                                                                                                                      document.getElementById('result').textContent = 'Loading…'
-                                                                                                                                              
-                                                                                                                                                      try {
-                                                                                                                                                                const res = await fetch(`https://api.x.com/2/users/by/username/${username}?user.fields=profile_image_url,public_metrics,description`, {
-                                                                                                                                                                            headers: { Authorization: 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA' }
-                                                                                                                                                                                      })
-                                                                                                                                                                                                const json = await res.json()
-                                                                                                                                                                                                          if (!json.data) throw new Error('Not found')
-                                                                                                                                                                                                                    const u = json.data
-                                                                                                                                                                                                                              const pic = u.profile_image_url.replace('_normal','_400x400')
-                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                  // Change background to user colors (simple version)
-                                                                                                                                                                                                                                                            document.body.style.background = `linear-gradient(135deg, #1da1f2, #${pic.split('/').pop().split('.')[0].slice(-6)})`
-                                                                                                                                                                                                                                                                      
-                                                                                                                                                                                                                                                                                document.getElementById('result').innerHTML = `
-                                                                                                                                                                                                                                                                                            <img src="${pic}" width="100" height="100" style="border-radius:50%;border:5px solid white"><br><br>
-                                                                                                                                                                                                                                                                                                        <b>${u.name}</b> @${u.username}<br><br>
-                                                                                                                                                                                                                                                                                                                    ${u.public_metrics.followers_count.toLocaleString()} followers<br>
-                                                                                                                                                                                                                                                                                                                                ${u.public_metrics.tweet_count} posts ever<br><br>
-                                                                                                                                                                                                                                                                                                                                            <i>“${u.description || 'No bio'}”</i>
-                                                                                                                                                                                                                                                                                                                                                      `
-                                                                                                                                                                                                                                                                                                                                                              } catch(e) {
-                                                                                                                                                                                                                                                                                                                                                                        document.getElementById('result').textContent = 'User not found or rate limited try again soon'
-                                                                                                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                                                                                                                      }
+    <script>
+      async function go() {
+        let username = document.getElementById('username').value.trim().replace('@','')
+        if (!username) return
+        document.getElementById('result').innerHTML = 'Loading your 2025 recap…'
+
+        try {
+          // This proxy works right now (Dec 2025)
+          const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent('https://api.x.com/2/users/by/username/' + username + '?user.fields=public_metrics,profile_image_url,description')}`, {
+            headers: { Authorization: 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA' }
+          })
+          
+          const json = await res.json()
+          if (!json.data) throw 'not found'
+          
+          const u = json.data
+          const pic = u.profile_image_url.replace('_normal','_400x400')
+          
+          document.getElementById('result').innerHTML = `
+            <img src="${pic}" width="120" height="120"><br><br>
+            <b style="font-size:2rem">${u.name}</b><br>
+            @${u.username}<br><br>
+            <b>${u.public_metrics.followers_count.toLocaleString()}</b> followers<br>
+            <b>${u.public_metrics.tweet_count.toLocaleString()}</b> total posts<br><br>
+            <i>“${u.description || 'No bio'}”</i><br><br>
+            <small>2025 recap coming soon · real stats in next update!</small>
+          `
+        } catch(e) {
+          document.getElementById('result').textContent = 'Rate limited or user not found — try again in 30 seconds or another username!'
+        }
+      }
+    </script>
+  </body>
+</html>                                                                                                                                 }
                                                                                                                                                                                                                                                                                                                                                                                           </script>
                                                                                                                                                                                                                                                                                                                                                                                             </body>
                                                                                                                                                                                                                                                                                                                                                                                             </html>
